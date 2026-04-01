@@ -82,6 +82,30 @@ OTEL_TRACES_EXPORTER=none
 ```
 
 Source-level patches across 19 files
+Proof Windows
+C:\Users\Temp\Downloads>python patch_binary.py "C:\Users\Gabag\.local\bin\claude.exe" "claude-private.exe"
+Patching C:\Users\Temp\.local\bin\claude.exe -> claude-private.exe
+  Patched 3x: https://http-intake.logs.us5.datadoghq.com/api/v2/logs
+  Patched 3x: pubbbf48e6d78dae54bceaa4acf463299bf
+  Patched 2x: /api/event_logging/batch
+  Patched 2x: /api/claude_code/metrics
+  Patched 3x: /api/claude_code/organizations/metrics_enabled
+  Not found: /api/claude_code/managed_settings
+  Patched 3x: /api/claude_code/user_settings
+  Patched 3x: /api/claude_code/policy_limits
+  Not found: /api/claude_cli/bootstrap
+  Patched 3x: /api/claude_code_grove
+  Not found: mcp-registry/v0/servers
+  Not found: /api/auth/trusted_devices
+  Patched 3x: /api/oauth/account/grove_notice_viewed
+  Patched 3x: /referral/eligibility
+  Patched 3x: /referral/redemptions
+  Not found: /v2/session_ingress/
+  Patched 3x: /v1/session_ingress/session/
+  Not found: https://api-staging.anthropic.com/api/event_logging/batch
+
+Patched 12 endpoints. Output: claude-private.exe
+Binary size: 240928416 bytes (unchanged)
 
 ---
 
@@ -113,11 +137,8 @@ install.sh                    Alternative installer
 ---
 
 ## Limitations
-
-- **Linux x86_64 only** — compiled Bun executable.
 - **No auto-updates** — disabled by design. Re-patch when you want a new version.
 - **Some features degraded** — Grove, referrals, team memory sync, and anything depending on remote feature flags won't work. Core functionality (conversations, tools, file editing, bash, MCP) is unaffected.
-
 ---
 
 ## Based on
