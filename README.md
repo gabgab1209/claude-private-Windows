@@ -1,3 +1,4 @@
+```markdown
 # Claude Private Edition (Windows)
 
 A patched build of Claude Code CLI (v2.1.88) with **all telemetry, analytics, and phone-home behavior removed**.
@@ -8,16 +9,16 @@ One executable. No telemetry. Drop-in replacement.
 
 ## Install
 
-Download `claude-private-2.1.88-windows.zip` from [Releases](../../releases) and extract it to your preferred directory. 
+Download `claude-notelemetry.exe` and `claude-private.cmd` from [Releases](../../releases) and place them in the same folder.
 
 Run the wrapper script directly from your Command Prompt or PowerShell:
 
 ```cmd
-cd \path\to\extracted\folder
+cd \path\to\download\folder
 claude-private.cmd
 ```
 
-To make it globally accessible, add the folder containing `claude-private.cmd` to your Windows `PATH` environment variable.
+To make it globally accessible across your system, add the folder containing `claude-private.cmd` and `claude-notelemetry.exe` to your Windows `PATH` environment variable.
 
 The binary is self-contained (Bun executable). No dependencies. Runs on any **Windows x64** system.
 
@@ -80,7 +81,7 @@ The stock Claude Code CLI contains 17+ phone-home mechanisms, many firing on bac
 
 **Layer 1 — Binary patching.** All telemetry URLs in the compiled executable were replaced with same-length dummy strings. The Datadog client token was zeroed out. Binary size unchanged, no structural modifications.
 
-**Layer 2 — Environment overrides.** The `claude-private.cmd` wrapper script sets:
+**Layer 2 — Environment overrides.** The wrapper script sets necessary variables to disable internal tracking switches:
 ```cmd
 set CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
 set DISABLE_TELEMETRY=1
@@ -89,35 +90,6 @@ set CLAUDE_CODE_ENABLE_TELEMETRY=0
 set OTEL_METRICS_EXPORTER=none
 set OTEL_LOGS_EXPORTER=none
 set OTEL_TRACES_EXPORTER=none
-```
-
-Source-level patches across 19 files.
-
-### Patching Process Output (Windows)
-```
-C:\Users\Temp\Downloads>python patch_binary.py "C:\Users\Temp\.local\bin\claude.exe" "claude-private.exe"
-Patching C:\Users\Temp\.local\bin\claude.exe -> claude-private.exe
-  Patched 3x: https://http-intake.logs.us5.datadoghq.com/api/v2/logs
-  Patched 3x: pubbbf48e6d78dae54bceaa4acf463299bf
-  Patched 2x: /api/event_logging/batch
-  Patched 2x: /api/claude_code/metrics
-  Patched 3x: /api/claude_code/organizations/metrics_enabled
-  Not found: /api/claude_code/managed_settings
-  Patched 3x: /api/claude_code/user_settings
-  Patched 3x: /api/claude_code/policy_limits
-  Not found: /api/claude_cli/bootstrap
-  Patched 3x: /api/claude_code_grove
-  Not found: mcp-registry/v0/servers
-  Not found: /api/auth/trusted_devices
-  Patched 3x: /api/oauth/account/grove_notice_viewed
-  Patched 3x: /referral/eligibility
-  Patched 3x: /referral/redemptions
-  Not found: /v2/session_ingress/
-  Patched 3x: /v1/session_ingress/session/
-  Not found: https://api-staging.anthropic.com/api/event_logging/batch
-
-Patched 12 endpoints. Output: claude-private.exe
-Binary size: 240928416 bytes (unchanged)
 ```
 
 ---
@@ -144,6 +116,7 @@ patch_binary.py               Reproducible RAW Python patching script
 ---
 
 ## Limitations
+- **Windows x64 only** — compiled Bun executable.
 - **No auto-updates** — disabled by design. Re-patch when you want a new version.
 - **Some features degraded** — Grove, referrals, team memory sync, and anything depending on remote feature flags won't work. Core functionality (conversations, tools, file editing, shell commands, MCP) is unaffected.
 
@@ -152,3 +125,4 @@ patch_binary.py               Reproducible RAW Python patching script
 ## Based on
 
 Claude Code CLI v2.1.88 by [Anthropic](https://anthropic.com). Source exposed 2026-03-31 via npm registry source map file.
+```
