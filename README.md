@@ -82,6 +82,7 @@ OTEL_TRACES_EXPORTER=none
 ```
 
 Source-level patches across 19 files
+
 Proof Windows
 ```
 C:\Users\Temp\Downloads>python patch_binary.py "C:\Users\Gabag\.local\bin\claude.exe" "claude-private.exe"
