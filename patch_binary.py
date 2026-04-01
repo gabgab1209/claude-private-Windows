@@ -156,13 +156,13 @@ def patch_binary(input_path: str, output_path: str):
     with open(output_path, 'wb') as f:
         f.write(data)
 
-    os.chmod(output_path, 0o755)
     print(f"\nPatched {patched_count} endpoints. Output: {output_path}")
     print(f"Binary size: {original_size} bytes (unchanged)")
 
 if __name__ == '__main__':
-    input_path = sys.argv[1] if len(sys.argv) > 1 else '/home/gamerock/.local/share/claude/versions/2.1.88'
-    output_path = sys.argv[2] if len(sys.argv) > 2 else '/home/gamerock/single-tasks-local/claude-code-source/patched/claude-notelemetry'
+    # Defaulting to standard Windows CLI binary names
+    input_path = sys.argv[1] if len(sys.argv) > 1 else 'claude.exe'
+    output_path = sys.argv[2] if len(sys.argv) > 2 else 'claude-notelemetry.exe'
 
     print(f"Patching {input_path} -> {output_path}")
     patch_binary(input_path, output_path)
