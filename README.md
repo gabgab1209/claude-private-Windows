@@ -1,4 +1,4 @@
-```markdown
+
 # Claude Private Edition (Windows)
 
 A patched build of Claude Code CLI (v2.1.88) with **all telemetry, analytics, and phone-home behavior removed**.
