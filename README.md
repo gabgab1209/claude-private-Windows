@@ -83,6 +83,7 @@ OTEL_TRACES_EXPORTER=none
 
 Source-level patches across 19 files
 Proof Windows
+```
 C:\Users\Temp\Downloads>python patch_binary.py "C:\Users\Gabag\.local\bin\claude.exe" "claude-private.exe"
 Patching C:\Users\Temp\.local\bin\claude.exe -> claude-private.exe
   Patched 3x: https://http-intake.logs.us5.datadoghq.com/api/v2/logs
@@ -106,6 +107,7 @@ Patching C:\Users\Temp\.local\bin\claude.exe -> claude-private.exe
 
 Patched 12 endpoints. Output: claude-private.exe
 Binary size: 240928416 bytes (unchanged)
+```
 
 ---
 
