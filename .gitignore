@@ -1,4 +1,4 @@
-# The .run file is >50MB so it should go in GitHub Releases, not in the repo.
-# Uncomment the line below if using Git LFS instead.
-claude-private-2.1.88.run
-claude-notelemetry
+# Ignore patched binary and releases
+claude-notelemetry.exe
+claude.exe
+claude-private-*.zip
