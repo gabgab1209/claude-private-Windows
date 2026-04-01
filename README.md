@@ -1,31 +1,33 @@
-# Claude Private Edition
+# Claude Private Edition (Windows)
 
 A patched build of Claude Code CLI (v2.1.88) with **all telemetry, analytics, and phone-home behavior removed**.
 
-One binary. No telemetry. Drop-in replacement.
+One executable. No telemetry. Drop-in replacement.
 
 ---
 
 ## Install
 
-Download `claude-private-2.1.88.run` from [Releases](../../releases), then:
+Download `claude-private-2.1.88-windows.zip` from [Releases](../../releases) and extract it to your preferred directory. 
 
-```bash
-chmod +x claude-private-2.1.88.run
-./claude-private-2.1.88.run
+Run the wrapper script directly from your Command Prompt or PowerShell:
+
+```cmd
+cd \path\to\extracted\folder
+claude-private.cmd
 ```
 
-Pass `--prefix /custom/path` to install somewhere other than `~/.local/bin/`.
+To make it globally accessible, add the folder containing `claude-private.cmd` to your Windows `PATH` environment variable.
 
-The binary is self-contained (Bun executable). No dependencies. Runs on any **Linux x86_64** system.
+The binary is self-contained (Bun executable). No dependencies. Runs on any **Windows x64** system.
 
 ---
 
 ## Usage
 
-```bash
-claude-private                          # interactive session
-claude-private -p "explain this code"   # non-interactive
+```cmd
+claude-private.cmd                            :: interactive session
+claude-private.cmd -p "explain this code"     :: non-interactive
 ```
 
 All standard `claude` flags work (`-p`, `--model`, `--allowedTools`, `--add-dir`, etc.).
@@ -34,8 +36,16 @@ All standard `claude` flags work (`-p`, `--model`, `--allowedTools`, `--add-dir`
 
 Claude Code speaks the **Anthropic Messages API** (`POST /v1/messages`). If your backend speaks a different protocol (OpenAI, vLLM, Ollama, etc.), use [claude-code-router](https://github.com/musistudio/claude-code-router) to translate, then point at it:
 
-```bash
-ANTHROPIC_BASE_URL=http://localhost:3456 claude-private
+**Command Prompt:**
+```cmd
+set ANTHROPIC_BASE_URL=http://localhost:3456
+claude-private.cmd
+```
+
+**PowerShell:**
+```powershell
+$env:ANTHROPIC_BASE_URL="http://localhost:3456"
+.\claude-private.cmd
 ```
 
 ---
@@ -70,20 +80,20 @@ The stock Claude Code CLI contains 17+ phone-home mechanisms, many firing on bac
 
 **Layer 1 — Binary patching.** All telemetry URLs in the compiled executable were replaced with same-length dummy strings. The Datadog client token was zeroed out. Binary size unchanged, no structural modifications.
 
-**Layer 2 — Environment overrides.** The wrapper script sets:
-```
-CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
-DISABLE_TELEMETRY=1
-DISABLE_AUTOUPDATER=1
-CLAUDE_CODE_ENABLE_TELEMETRY=0
-OTEL_METRICS_EXPORTER=none
-OTEL_LOGS_EXPORTER=none
-OTEL_TRACES_EXPORTER=none
+**Layer 2 — Environment overrides.** The `claude-private.cmd` wrapper script sets:
+```cmd
+set CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+set DISABLE_TELEMETRY=1
+set DISABLE_AUTOUPDATER=1
+set CLAUDE_CODE_ENABLE_TELEMETRY=0
+set OTEL_METRICS_EXPORTER=none
+set OTEL_LOGS_EXPORTER=none
+set OTEL_TRACES_EXPORTER=none
 ```
 
-Source-level patches across 19 files
+Source-level patches across 19 files.
 
-Proof Windows
+### Patching Process Output (Windows)
 ```
 C:\Users\Temp\Downloads>python patch_binary.py "C:\Users\Temp\.local\bin\claude.exe" "claude-private.exe"
 Patching C:\Users\Temp\.local\bin\claude.exe -> claude-private.exe
@@ -114,34 +124,29 @@ Binary size: 240928416 bytes (unchanged)
 
 ## Rebuilding from a newer version
 
-```bash
-# Patch a new binary
-python3 patch_binary.py /path/to/new/claude ./claude-notelemetry
-
-# Rebuild the .run installer
-bash make-run.sh
+```cmd
+:: Patch a new Windows binary using the raw Python script
+python patch_binary.py "C:\path\to\new\claude.exe" "claude-notelemetry.exe"
 ```
 
-`patch_binary.py` does same-length byte replacement on 15 URL patterns. If Anthropic changes their telemetry endpoints in a future version, you may need to update the patterns.
+`patch_binary.py` does same-length byte replacement on 15 URL patterns. If Anthropic changes their telemetry endpoints in a future version, you may need to update the patterns in the python script.
 
 ---
 
 ## Files
 
 ```
-claude-private-2.1.88.run    Self-extracting installer 
-claude-notelemetry            Patched binary
-claude-private                Wrapper script
-patch_binary.py               Reproducible patching script
-make-run.sh                   Builds the .run installer
-install.sh                    Alternative installer
+claude-notelemetry.exe        Patched Windows binary
+claude-private.cmd            Wrapper script (sets environment variables)
+patch_binary.py               Reproducible RAW Python patching script
 ```
 
 ---
 
 ## Limitations
 - **No auto-updates** — disabled by design. Re-patch when you want a new version.
-- **Some features degraded** — Grove, referrals, team memory sync, and anything depending on remote feature flags won't work. Core functionality (conversations, tools, file editing, bash, MCP) is unaffected.
+- **Some features degraded** — Grove, referrals, team memory sync, and anything depending on remote feature flags won't work. Core functionality (conversations, tools, file editing, shell commands, MCP) is unaffected.
+
 ---
 
 ## Based on
